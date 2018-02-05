@@ -163,7 +163,6 @@ void Board::step() {
 					continue;
 				default:
 					other_cell = Cell(Cell::State::PREY);
-					cur_cell = Cell(Cell::State::PREY);
 				}
 			}
 		}
