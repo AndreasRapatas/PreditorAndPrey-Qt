@@ -23,7 +23,6 @@ Board::Board(size_t x, size_t y, QWidget *parent)
 	this->clear();
 	this->fill_random();
 	// this->fill_other();
-	this->update();
 }
 
 Board::~Board() {
@@ -67,6 +66,7 @@ void Board::fill_random() {
 			matrix[y][x] = this->random_cell();
 		}
 	}
+	this->update();
 }
 void Board::fill_other() {
 
@@ -79,6 +79,7 @@ void Board::fill_other() {
 			}
 		}
 	}
+	this->update();
 }
 
 void Board::clear() {
@@ -117,6 +118,10 @@ void Board::run() {
 void Board::pause() {
 
 	running = false;
+}
+
+void Board::reset() {
+	this->fill_random();
 }
 
 void Board::step() {

@@ -55,6 +55,7 @@ public slots:
 
 	void run();
 	void pause();
+	void reset();
 	void step();
 
 public:
