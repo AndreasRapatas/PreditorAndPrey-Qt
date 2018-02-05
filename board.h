@@ -3,12 +3,12 @@
 
 #include <QWidget>
 #include <QImage>
-#include <QGraphicsScene>
+#include <QLabel>
 #include <QColor>
 #include <random>
 #include <utility>
 
-class Board : public QGraphicsScene {
+class Board : public QLabel {
 
 	Q_OBJECT
 

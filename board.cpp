@@ -5,12 +5,12 @@
 
 Board::Board(size_t x, size_t y, QWidget *parent)
 	: QLabel(parent)
+	, img(new QImage(x, y, QImage::Format_RGB32))
 	, size_x(x)
 	, size_y(y)
+	, running(false)
 	, x_range(0, size_x - 1)
 	, y_range(0, size_y - 1)
-	, img(new QImage(x, y, QImage::Format_RGB32))
-	, running(false)
 {
 
 	img->fill(qRgb(0,0,0));
@@ -19,6 +19,7 @@ Board::Board(size_t x, size_t y, QWidget *parent)
 	for (size_t y = 0; y < size_y; ++y) {
 		matrix[y] = new Cell[size_x];
 	}
+
 	this->clear();
 	this->fill_random();
 	// this->fill_other();
@@ -26,6 +27,7 @@ Board::Board(size_t x, size_t y, QWidget *parent)
 }
 
 Board::~Board() {
+
 	for (size_t y = 0; y < size_y; ++y) {
 		delete[] matrix[y];
 	}
@@ -37,12 +39,12 @@ Board::Cell Board::random_cell() {
 	static std::uniform_int_distribution<int> state_range(0, 2);
 
 	switch (state_range(generator)) {
-		case 0:
-			return Cell(Cell::State::PREDITOR);
-		case 1:
-			return Cell(Cell::State::PREY);
-		default:
-			return Cell(Cell::State::NOTHING);
+	case 0:
+		return Cell(Cell::State::PREDITOR);
+	case 1:
+		return Cell(Cell::State::PREY);
+	default:
+		return Cell(Cell::State::NOTHING);
 	}
 }
 
@@ -74,7 +76,6 @@ void Board::fill_other() {
 				matrix[y][x] = Cell(Cell::State::PREY);
 			} else {
 				matrix[y][x] = Cell(Cell::State::PREDITOR);
-
 			}
 		}
 	}
@@ -129,35 +130,40 @@ void Board::step() {
 			if (new_pos.first == x && new_pos.second == y) { continue; }
 
 			Cell &cur_cell = matrix[y][x];
-
 			Cell &other_cell = matrix[new_pos.second][new_pos.first];
 
 			if (cur_cell.state == Cell::State::PREDITOR) {
+
 				cur_cell.health--;
+
+				// Check if it is dead
 				if (cur_cell.health == 0) {
 					cur_cell = Cell(Cell::State::NOTHING);
 					continue;
 				}
+
 				switch (other_cell.state) {
-					case Cell::State::PREDITOR:
-						continue;
-					case Cell::State::PREY:
-						cur_cell.health += other_cell.health;
-						other_cell = Cell(Cell::State::PREDITOR);
-						break;
-					default:
-						std::swap(cur_cell, other_cell);
-						break;
+				case Cell::State::PREDITOR:
+					continue;
+				case Cell::State::PREY:
+					cur_cell.health += other_cell.health;
+					other_cell = Cell(Cell::State::PREDITOR);
+					break;
+				default:
+					std::swap(cur_cell, other_cell);
+					break;
 				}
+
 			} else if (cur_cell.state == Cell::State::PREY) {
+
 				switch (other_cell.state) {
-					case Cell::State::PREDITOR:
-						continue;
-					case Cell::State::PREY:
-						continue;
-					default:
-						other_cell = Cell(Cell::State::PREY);
-						cur_cell = Cell(Cell::State::PREY);
+				case Cell::State::PREDITOR:
+					continue;
+				case Cell::State::PREY:
+					continue;
+				default:
+					other_cell = Cell(Cell::State::PREY);
+					cur_cell = Cell(Cell::State::PREY);
 				}
 			}
 		}
@@ -165,6 +171,7 @@ void Board::step() {
 
 	this->update();
 
+	// Pause to check for user input
 	if (running) {
 		QTimer::singleShot(10, this, &Board::step);
 	}
