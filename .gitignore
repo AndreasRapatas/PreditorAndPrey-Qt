@@ -1,4 +1,5 @@
 cellular
 *.o
 build/
-MakeFile
+Makefile
+moc_*
