@@ -1,6 +1,6 @@
 # Preditor And Prey
 
-![Preview](https://i.imgur.com/ssM9G0v.png "Logo Title Text 1")
+![Preview](https://i.imgur.com/ssM9G0v.png "Window Preview")
 
 A cellular automaton simulating Preditors (red) and Prey (green).
 
