@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Board_t {
     QByteArrayData data[5];
-    char stringdata0[23];
+    char stringdata0[22];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,13 +30,13 @@ struct qt_meta_stringdata_Board_t {
 static const qt_meta_stringdata_Board_t qt_meta_stringdata_Board = {
     {
 QT_MOC_LITERAL(0, 0, 5), // "Board"
-QT_MOC_LITERAL(1, 6, 5), // "start"
-QT_MOC_LITERAL(2, 12, 0), // ""
-QT_MOC_LITERAL(3, 13, 4), // "stop"
-QT_MOC_LITERAL(4, 18, 4) // "next"
+QT_MOC_LITERAL(1, 6, 3), // "run"
+QT_MOC_LITERAL(2, 10, 0), // ""
+QT_MOC_LITERAL(3, 11, 5), // "pause"
+QT_MOC_LITERAL(4, 17, 4) // "step"
 
     },
-    "Board\0start\0\0stop\0next"
+    "Board\0run\0\0pause\0step"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,9 +72,9 @@ void Board::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         Board *_t = static_cast<Board *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->start(); break;
-        case 1: _t->stop(); break;
-        case 2: _t->next(); break;
+        case 0: _t->run(); break;
+        case 1: _t->pause(); break;
+        case 2: _t->step(); break;
         default: ;
         }
     }

@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include <QTimer>
+#include <iostream>
 
 Board::Board(size_t x, size_t y, QWidget *parent)
 	: QLabel(parent)
@@ -14,12 +15,13 @@ Board::Board(size_t x, size_t y, QWidget *parent)
 
 	img->fill(qRgb(0,0,0));
 
-	matrix = new Cell::State*[size_y];
+	matrix = new Cell*[size_y];
 	for (size_t y = 0; y < size_y; ++y) {
-		matrix[y] = new Cell::State[size_x];
+		matrix[y] = new Cell[size_x];
 	}
 	this->clear();
 	this->fill_random();
+	// this->fill_other();
 	this->update();
 }
 
@@ -30,17 +32,17 @@ Board::~Board() {
 	delete[] matrix;
 }
 
-Board::Cell::State Board::random_state() {
+Board::Cell Board::random_cell() {
 
-	static std::uniform_int_distribution<int> c_range(0, 2);
+	static std::uniform_int_distribution<int> state_range(0, 2);
 
-	switch (c_range(generator)) {
+	switch (state_range(generator)) {
 		case 0:
-			return Cell::State::PREDITOR;
+			return Cell(Cell::State::PREDITOR);
 		case 1:
-			return Cell::State::PREY;
+			return Cell(Cell::State::PREY);
 		default:
-			return Cell::State::NOTHING;
+			return Cell(Cell::State::NOTHING);
 	}
 }
 
@@ -49,7 +51,7 @@ void Board::update() {
 	for (size_t y = 0; y < size_y; ++y) {
 		for (size_t x = 0; x < size_x; ++x) {
 
-			img->setPixel(x, y, matrix[y][x]);
+			img->setPixel(x, y, matrix[y][x].state);
 		}
 	}
 
@@ -60,7 +62,20 @@ void Board::fill_random() {
 
 	for (size_t y = 0; y < size_y; ++y) {
 		for (size_t x = 0; x < size_x; ++x) {
-			matrix[y][x] = random_state();
+			matrix[y][x] = this->random_cell();
+		}
+	}
+}
+void Board::fill_other() {
+
+	for (size_t y = 0; y < size_y; ++y) {
+		for (size_t x = 0; x < size_x; ++x) {
+			if (y < size_y / 2) {
+				matrix[y][x] = Cell(Cell::State::PREY);
+			} else {
+				matrix[y][x] = Cell(Cell::State::PREDITOR);
+
+			}
 		}
 	}
 }
@@ -74,43 +89,84 @@ void Board::clear() {
 	}
 }
 
-unsigned valid_move_x(unsigned x) {
+std::pair<unsigned, unsigned> Board::valid_move(unsigned x, unsigned y) {
 
-	// TODO: all of this
+	static std::uniform_int_distribution<int> move(-1, 1);
+	int new_x = 0;
+	int new_y = 0;
 
-	static std::uniform_int_distribution<unsigned> x_space(0, 2);
+	while (true) {
 
-	for (bool is_valid = true; !is_valid; ) {
+		new_x = x + move(generator);
+		new_y = y + move(generator);
 
-		if (false) {
-			is_valid = false;
-		}
+		if (new_x < 0 || static_cast<unsigned>(new_x) >= size_x) { continue; }
+		if (new_y < 0 || static_cast<unsigned>(new_y) >= size_y) { continue; }
+
+		return {new_x, new_y};
 	}
 }
 
-void Board::start() {
+void Board::run() {
 
 	running = true;
-	this->next();
+	this->step();
 }
 
-void Board::stop() {
+void Board::pause() {
 
 	running = false;
 }
 
-void Board::next() {
+void Board::step() {
 
 	for (size_t y = 0; y < size_y; ++y) {
 		for (size_t x = 0; x < size_x; ++x) {
 
+			auto new_pos = this->valid_move(x, y);
+
+			// It didn't move
+			if (new_pos.first == x && new_pos.second == y) { continue; }
+
+			Cell &cur_cell = matrix[y][x];
+
+			Cell &other_cell = matrix[new_pos.second][new_pos.first];
+
+			if (cur_cell.state == Cell::State::PREDITOR) {
+				cur_cell.health--;
+				if (cur_cell.health == 0) {
+					cur_cell = Cell(Cell::State::NOTHING);
+					continue;
+				}
+				switch (other_cell.state) {
+					case Cell::State::PREDITOR:
+						continue;
+					case Cell::State::PREY:
+						cur_cell.health += other_cell.health;
+						other_cell = Cell(Cell::State::PREDITOR);
+						break;
+					default:
+						std::swap(cur_cell, other_cell);
+						break;
+				}
+			} else if (cur_cell.state == Cell::State::PREY) {
+				switch (other_cell.state) {
+					case Cell::State::PREDITOR:
+						continue;
+					case Cell::State::PREY:
+						continue;
+					default:
+						other_cell = Cell(Cell::State::PREY);
+						cur_cell = Cell(Cell::State::PREY);
+				}
+			}
 		}
 	}
 
 	this->update();
 
 	if (running) {
-		QTimer::singleShot(1, this, &Board::next);
+		QTimer::singleShot(10, this, &Board::step);
 	}
 }
 

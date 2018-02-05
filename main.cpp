@@ -4,7 +4,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-
 #include "board.h"
 
 int main(int argc, char *argv[]) {
@@ -12,12 +11,14 @@ int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
 
 	Board *board = new Board(600, 300);
-	QPushButton *start = new QPushButton("Begin");
-	QPushButton *stop = new QPushButton("Stop");
+	QPushButton *step = new QPushButton("Step");
+	QPushButton *run = new QPushButton("Run");
+	QPushButton *pause = new QPushButton("Pause");
 
 	QHBoxLayout *buttons = new QHBoxLayout;
-	buttons->addWidget(start);
-	buttons->addWidget(stop);
+	buttons->addWidget(step);
+	buttons->addWidget(run);
+	buttons->addWidget(pause);
 
 	QVBoxLayout *lay = new QVBoxLayout;
 	lay->addWidget(board);
@@ -27,13 +28,18 @@ int main(int argc, char *argv[]) {
 	window.setLayout(lay);
 	window.show();
 
+
 	QObject::connect(
-		start, &QPushButton::clicked,
-		board, &Board::start
+		step, &QPushButton::clicked,
+		board, &Board::step
 	);
 	QObject::connect(
-		stop, &QPushButton::clicked,
-		board, &Board::stop
+		run, &QPushButton::clicked,
+		board, &Board::run
+	);
+	QObject::connect(
+		pause, &QPushButton::clicked,
+		board, &Board::pause
 	);
 
 	return app.exec();
