@@ -4,15 +4,15 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include "board.h"
+#include "predator_and_prey.h"
 
 int main(int argc, char *argv[]) {
 
 	QApplication app(argc, argv);
 
-	Board *board = new Board(600, 300);
-	QPushButton *step = new QPushButton("Step");
-	QPushButton *run = new QPushButton("Run");
+	PredatorAndPrey *board = new PredatorAndPrey(600, 300);
+	QPushButton *step  = new QPushButton("Step");
+	QPushButton *run   = new QPushButton("Run");
 	QPushButton *reset = new QPushButton("Reset");
 	QPushButton *pause = new QPushButton("Pause");
 
@@ -30,22 +30,21 @@ int main(int argc, char *argv[]) {
 	window.setLayout(lay);
 	window.show();
 
-
 	QObject::connect(
 		step, &QPushButton::clicked,
-		board, &Board::step
+		board, &PredatorAndPrey::step
 	);
 	QObject::connect(
 		run, &QPushButton::clicked,
-		board, &Board::run
+		board, &PredatorAndPrey::run
 	);
 	QObject::connect(
 		reset, &QPushButton::clicked,
-		board, &Board::reset
+		board, &PredatorAndPrey::reset
 	);
 	QObject::connect(
 		pause, &QPushButton::clicked,
-		board, &Board::pause
+		board, &PredatorAndPrey::pause
 	);
 
 	return app.exec();

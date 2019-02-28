@@ -21,7 +21,7 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 
 set(
 	${PROJECT_NAME}_src
-	./src/board.cpp
+	./src/predator_and_prey.cpp
 	./src/main.cpp
 )
 
