@@ -14,9 +14,9 @@ predator_and_prey_qt
 # Installation
 
 ## Dependencies
-This project is based on [Qt5](https://www.qt.io/). Follow Qt's documentation to install it.
-
-For Ubuntu simply ```bash apt install qtbase5-dev```
+Follow the project's installation instructions.
+* [Qt5](https://www.qt.io/) (For Ubuntu simply ```apt install qtbase5-dev```)
+* [Rapatas/flat_matrix](https://github.com/Rapatas/flat_matrix)
 
 ## Predator & Prey
 ```bash
